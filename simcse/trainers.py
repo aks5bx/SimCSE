@@ -449,12 +449,8 @@ class CLTrainer(Trainer):
 
             inputs = None
             last_inputs = None
-            it = 0
+
             for step, inputs in enumerate(epoch_iterator):
-                if it == 20:
-                    should_training_stop = True 
-                else:
-                    it += 1
                 # Skip past any already trained steps if resuming training
                 if steps_trained_in_current_epoch > 0:
                     steps_trained_in_current_epoch -= 1
