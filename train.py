@@ -235,10 +235,18 @@ class OurTrainingArguments(TrainingArguments):
                 deepspeed.init_distributed()
             else:
                 torch.distributed.init_process_group(backend="nccl")
+            print('')
+            print('>>>>!!!', self.local_rank)
+            print('')
             device = torch.device("cuda", self.local_rank)
             self._n_gpu = 1
 
         if device.type == "cuda":
+            print('')
+            print('DEVICE COUNT!!! ', torch.cuda.device_count())
+            print('>>>>', device)
+            print('')
+
             torch.cuda.set_device(device)
 
         return device
