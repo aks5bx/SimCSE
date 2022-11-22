@@ -151,7 +151,9 @@ class CLTrainer(Trainer):
 
         # In all cases, including ddp/dp/deepspeed, self.model is always a reference to the model we
         # want to save.
-        assert _model_unwrap(model) is self.model, "internal model should be a reference to self.model"
+        
+        # assert _model_unwrap(model) is self.model, "internal model should be a reference to self.model"
+        assert unwrap_model(model) is self.model, "internal model should be a reference to self.model"
 
         # Determine the new best metric / best model checkpoint
         if metrics is not None and self.args.metric_for_best_model is not None:
@@ -447,7 +449,12 @@ class CLTrainer(Trainer):
 
             inputs = None
             last_inputs = None
+            it = 0
             for step, inputs in enumerate(epoch_iterator):
+                if it == 20:
+                    should_training_stop = True 
+                else:
+                    it += 1
                 # Skip past any already trained steps if resuming training
                 if steps_trained_in_current_epoch > 0:
                     steps_trained_in_current_epoch -= 1
