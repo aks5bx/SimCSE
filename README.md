@@ -26,6 +26,8 @@ eval_sickr_spearman = nan
 eval_stsb_spearman = nan
 ```
 
+# SimCSE Original README
+
 ## SimCSE: Simple Contrastive Learning of Sentence Embeddings
 
 This repository contains the code and pre-trained models for our paper [SimCSE: Simple Contrastive Learning of Sentence Embeddings](https://arxiv.org/abs/2104.08821).
