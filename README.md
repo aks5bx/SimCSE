@@ -1,7 +1,18 @@
 # For NYU USE
 
+Environment Setup 
+
+- Create and use a conda evironment from the yml file 
+
+```
+conda env create --name <INSERT NAME> --file=sim_env.yml
+```
+
+Running the Code 
+
 - Make sure to build data using the sh scripts in the data/ and SentEval/data directories
-- Results are in the eval_results.txt and train_results.txt files 
+- Results are in the eval_results.txt, train_results.txt files, output.txt
+
 
 ## Official End to End Run
 

@@ -264,7 +264,7 @@ dependencies:
     - portalocker==2.5.1
     - prettytable==3.3.0
     - prometheus-client==0.14.1
-    - protobuf==3.19.6
+    - protobuf==3.20.1
     - py==1.11.0
     - pyarrow==7.0.0
     - pyasn1==0.4.8
@@ -286,7 +286,7 @@ dependencies:
     - python-hostlist==1.21
     - python-nvd3==0.15.0
     - python-slugify==6.1.2
-    - pytorch-lightning==1.8.2
+    - pytorch-lightning==1.8.3
     - pytorch-quantization==2.1.2
     - pyzmq==23.2.0
     - raft==22.6.0a0+85.g3e5a625
@@ -322,6 +322,7 @@ dependencies:
     - tensorboard==2.9.1
     - tensorboard-data-server==0.6.1
     - tensorboard-plugin-wit==1.8.1
+    - tensorboardx==2.5.1
     - tensorrt==8.4.2.4
     - termcolor==2.1.1
     - terminado==0.15.0
