@@ -18,6 +18,10 @@ Running the Code
 
 ## Comparative Runs
 
+Note: the results of the Princeton SimCSE runs have been gathered from their published paper. Specifically, we report the results of their runs via Table 5 on Page 7. 
+
+The runs we are interested in are in the Supervised section of the table. The SimCSE runs are denoted in the table using the ∗ symbol. 
+
 ### BERT Base Case
 
 **Our Run**
