@@ -3,6 +3,29 @@
 - Make sure to build data using the sh scripts in the data/ and SentEval/data directories
 - Results are in the eval_results.txt and train_results.txt files 
 
+Train Results 
+```
+epoch = 1.0
+train_runtime = 748.7578
+train_samples_per_second = 2.877
+```
+
+Eval Results 
+```
+epoch = 1.0
+eval_CR = 36.24
+eval_MPQA = 68.77
+eval_MR = 50.0
+eval_MRPC = 32.46
+eval_SST2 = 49.08
+eval_SUBJ = 50.0
+eval_TREC = 1.58
+eval_avg_sts = nan
+eval_avg_transfer = 41.16142857142857
+eval_sickr_spearman = nan
+eval_stsb_spearman = nan
+```
+
 ## SimCSE: Simple Contrastive Learning of Sentence Embeddings
 
 This repository contains the code and pre-trained models for our paper [SimCSE: Simple Contrastive Learning of Sentence Embeddings](https://arxiv.org/abs/2104.08821).
