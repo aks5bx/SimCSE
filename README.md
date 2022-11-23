@@ -1,3 +1,8 @@
+# For NYU USE
+
+- Make sure to build data using the sh scripts in the data/ and SentEval/data directories
+- Results are in the eval_results.txt and train_results.txt files 
+
 ## SimCSE: Simple Contrastive Learning of Sentence Embeddings
 
 This repository contains the code and pre-trained models for our paper [SimCSE: Simple Contrastive Learning of Sentence Embeddings](https://arxiv.org/abs/2104.08821).
