@@ -3,6 +3,32 @@
 - Make sure to build data using the sh scripts in the data/ and SentEval/data directories
 - Results are in the eval_results.txt and train_results.txt files 
 
+**Official End to End Run**
+
+Our Run:
+```
+OUTPUT FOR: Supervised BERT Base Uncased
+
+------ test ------
++-------+-------+-------+-------+-------+--------------+-----------------+-------+
+| STS12 | STS13 | STS14 | STS15 | STS16 | STSBenchmark | SICKRelatedness |  Avg. |
++-------+-------+-------+-------+-------+--------------+-----------------+-------+
+| 75.30 | 84.67 | 80.19 | 85.40 | 80.82 |    84.26     |      80.39      | 81.58 |
++-------+-------+-------+-------+-------+--------------+-----------------+-------+
+```
+
+Their Run:
+```
+------ test ------
++-------+-------+-------+-------+-------+--------------+-----------------+-------+
+| STS12 | STS13 | STS14 | STS15 | STS16 | STSBenchmark | SICKRelatedness |  Avg. |
++-------+-------+-------+-------+-------+--------------+-----------------+-------+
+| 75.30 | 84.67 | 80.19 | 85.40 | 80.82 |    84.26     |      80.39      | 81.58 |
++-------+-------+-------+-------+-------+--------------+-----------------+-------+
+```
+
+**Debug Trial** 
+
 Train Results 
 ```
 epoch = 1.0
