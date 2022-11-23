@@ -1,5 +1,7 @@
 # For NYU USE
 
+## Setup
+
 Environment Setup 
 
 - Create and use a conda evironment from the yml file 
