@@ -109,11 +109,17 @@ class CLTrainer(Trainer):
                 return_tensors='pt',
                 padding=True,
             )
+
             for k in batch:
                 batch[k] = batch[k].to(self.args.device)
             with torch.no_grad():
                 outputs = self.model(**batch, output_hidden_states=True, return_dict=True, sent_emb=True)
+                print('TWO')
+                print(outputs)
+                print('TWO')
+                
                 pooler_output = outputs.pooler_output
+
             return pooler_output.cpu()
 
         # Set params for SentEval (fastmode)

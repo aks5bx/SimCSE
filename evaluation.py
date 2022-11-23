@@ -50,8 +50,8 @@ def main():
     args = parser.parse_args()
     
     # Load transformers' model checkpoint
-    model = AutoModel.from_pretrained(args.model_name_or_path)
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+    model = AutoModel.from_pretrained(args.model_name_or_path, cache_dir='/scratch/aks9136/tmp')
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='/scratch/aks9136/tmp')
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     

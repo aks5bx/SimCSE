@@ -8,6 +8,8 @@ import torch
 import collections
 import random
 
+from simcse import SimCSE
+
 from datasets import load_dataset
 
 import transformers
@@ -356,7 +358,11 @@ def main():
         )
 
     if model_args.model_name_or_path:
-        if 'roberta' in model_args.model_name_or_path:
+        if 1 == 1:
+            print('THIS WAS A HIT!!!')
+            model = SimCSE("princeton-nlp/sup-simcse-bert-base-uncased")
+
+        elif 'roberta' in model_args.model_name_or_path:
             model = RobertaForCL.from_pretrained(
                 model_args.model_name_or_path,
                 from_tf=bool(".ckpt" in model_args.model_name_or_path),
