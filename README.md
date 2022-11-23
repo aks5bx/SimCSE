@@ -3,7 +3,7 @@
 - Make sure to build data using the sh scripts in the data/ and SentEval/data directories
 - Results are in the eval_results.txt and train_results.txt files 
 
-**Official End to End Run**
+## Official End to End Run
 
 Our Run:
 ```
@@ -27,7 +27,7 @@ Their Run:
 +-------+-------+-------+-------+-------+--------------+-----------------+-------+
 ```
 
-**Debug Trial** 
+## Debug Trial
 
 Train Results 
 ```
