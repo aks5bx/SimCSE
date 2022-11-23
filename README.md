@@ -41,7 +41,7 @@ Running the Code
 
 ### RoBERTa Base Case 
 
-_ _The only differences here appear to be from differences in rounding._ _ 
+_The only differences here appear to be from differences in rounding._
 
 **Our Run**
 ```
