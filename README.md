@@ -1,4 +1,4 @@
-# For NYU USE
+# NLP Team II Project Repo
 
 ## Setup
 
