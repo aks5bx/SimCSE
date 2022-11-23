@@ -16,7 +16,7 @@ Running the Code
 
 ## Comparative Runs
 
-#### BERT Base Case
+### BERT Base Case
 
 **Our Run**
 ```
@@ -39,7 +39,7 @@ Running the Code
 +-------+-------+-------+-------+-------+--------------+-----------------+-------+
 ```
 
-#### RoBERTa Base Case 
+### RoBERTa Base Case 
 
 _ _The only differences here appear to be from differences in rounding._ _ 
 
