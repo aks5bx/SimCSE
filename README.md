@@ -2,7 +2,7 @@
 
 TABLE OF CONTENTS
 - Part I: Replication 
-- Part II: Extension Part 1
+- Part II: Extensions
 
 # Part I: Replication 
 
@@ -125,4 +125,15 @@ eval_sickr_spearman = nan
 eval_stsb_spearman = nan
 ```
 
-# Part II: Extention Part 1
+# Part II: Extentions
+
+## Setup
+
+Data Generation & EDA: 
+
+- Run the file `generate_tweet_data.py` to generate tweet-sentiment dataset 
+- EDA is available in `data_analysis/sentiment_data_exp.ipyny`
+
+## Extension I: Comparing BERT Model vs SimCSE Model 
+
+- Train the classifier using `train_sentiment_classifier.py`
