@@ -8,15 +8,20 @@ TABLE OF CONTENTS
 
 ## Setup
 
-Environment Setup 
+#### Environment Setup 
 
+**Option 1**
 - Create and use a conda evironment from the yml file 
 
 ```
 conda env create --name <INSERT NAME> --file=sim_env.yml
 ```
 
-Running the Code 
+**Option 2**
+- Create your own conda environment and install packages 
+- Installed required pacakges using `pip install -r requirements.txt`
+
+### Running the Code 
 
 - Make sure to build data using the sh scripts in the data/ and SentEval/data directories
 - Results are in the eval_results.txt, train_results.txt files, output.txt
@@ -129,9 +134,25 @@ eval_stsb_spearman = nan
 
 ## Setup
 
-Data Generation & EDA: 
+#### Environment Setup
 
-- Run the file `generate_tweet_data.py` to generate tweet-sentiment dataset 
+**Option 1**
+- Create and use a conda evironment from the yml file 
+
+```
+conda env create --name <INSERT NAME> --file=sim_env.yml
+```
+
+**Option 2**
+- Create your own conda environment and install packages 
+- Installed required pacakges using `pip install -r requirements.txt`
+
+#### Data Generation & EDA: 
+
+- Run the file `generate_tweet_data.py fifa 1000` to generate tweet-sentiment dataset 
+- (fifa) is the query arg
+- 1000 is the dataset length arg
+- Data output is `tw_sentiment_df.csv`
 - EDA is available in `data_analysis/sentiment_data_exp.ipyny`
 
 ## Extension I: Comparing BERT Model vs SimCSE Model 

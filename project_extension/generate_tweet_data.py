@@ -19,7 +19,7 @@ access_token_secret = 'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth)
+api = tweepy.API(auth, retry_count=10, retry_delay=5)
 
 # Create a function to clean the tweets. Remove profanity, unnecessary characters, spaces, and stopwords.
 def clean_tweet(tweet):

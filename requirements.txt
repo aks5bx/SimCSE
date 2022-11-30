@@ -7,3 +7,6 @@ prettytable
 gradio
 torch
 setuptools
+better-profanity
+textblob
+tweepy
