@@ -68,11 +68,11 @@ def query_data(query, num_tweets):
 
 def bin_polarity(score):
     if score > 0:
-        sentiment = 1
+        sentiment = 2
     elif score < 0:
-        sentiment = -1
-    else:
         sentiment = 0
+    else:
+        sentiment = 1
     return sentiment
 
 
@@ -89,7 +89,7 @@ def get_sentiment_scores(query, num_tweets):
     tqdm.pandas(desc='getting sentiment labels')
     tweets_df['sentiment'] = tweets_df['polarity'].progress_apply(lambda x: bin_polarity(x))
 
-    label_dict = {'pos': 1, 'neg': -1, 'neu': 0}
+    label_dict = {'pos': 2, 'neg': 0, 'neu': 1}
     for label in label_dict:
         print(f'{label} count:', len(tweets_df[tweets_df['sentiment']==label_dict[label]]))
 
