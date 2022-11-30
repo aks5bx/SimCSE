@@ -6,6 +6,8 @@ from textblob import TextBlob
 import pandas as pd
 from better_profanity import profanity
 from tqdm import tqdm
+from searchtweets import ResultStream, gen_rule_payload, load_credentials
+from tweet_parser.tweet import Tweet
 
 
 #Twitter developer keys and tokens
@@ -13,6 +15,14 @@ consumer_key = 'JJx1idjQNber5YWEiyABUc1zB'
 consumer_secret = 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
 access_token = '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
 access_token_secret = 'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
+
+premium_search_args = load_credentials("twitter_keys.yaml",
+                                       yaml_key="search_tweets_api",
+                                       env_overwrite=False)
+
+
+rule = gen_rule_payload("#covid19 #giuseppeconte lang:it", results_per_call=100, from_date="2020-12-14", to_date="2020-12-21") 
+
 
 
 #Access twitter data
