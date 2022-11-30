@@ -1,6 +1,6 @@
 search_tweets_api:
-  account_type: premium  
-  endpoint: https://api.twitter.com/1.1/tweets/search/30day/my_env_name.json
+  account_type: 'premium'
+  endpoint: 'https://api.twitter.com/1.1/tweets/search/30day/my_env_name.json'
   bearer_token: 'AAAAAAAAAAAAAAAAAAAAAL6ojwEAAAAARFJxKnSnVtpz8g8kFxPuG2z%2FpmU%3D6h1V4bLTTFLPw0gFQSIai251dS74lLbZvc8Vz6GHE4GtMBUuRK'
   #consumer_key: <CONSUMER_KEY>   
   #consumer_secret: <CONSUMER_SECRET>

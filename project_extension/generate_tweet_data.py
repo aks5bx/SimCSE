@@ -1,3 +1,7 @@
+#############
+## IMPORTS ##
+#############
+
 import re 
 from argparse import ArgumentParser
 import tweepy 
@@ -8,21 +12,37 @@ from better_profanity import profanity
 from tqdm import tqdm
 from searchtweets import ResultStream, gen_rule_payload, load_credentials
 from tweet_parser.tweet import Tweet
+import os
+import yaml 
 
+##################
+## CONFIG SETUP ##
+##################
 
 #Twitter developer keys and tokens
-consumer_key = 'JJx1idjQNber5YWEiyABUc1zB'
-consumer_secret = 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
-access_token = '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
-access_token_secret = 'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
+consumer_key = '4AwgTr7tzLrOlcUzBTLHbGZtC' #'JJx1idjQNber5YWEiyABUc1zB'
+consumer_secret = 'ixWKhrso6ETcAzeSiLygb0Y7C1dOTuLOoWaPSrFh4FZsFXim5y' # 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
+access_token = '1132165624958820352-IikGwSWKfyjGlyTkfPNHSsgn3mp7Wf' # '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
+access_token_secret = 'eEAFheMItCkGFehifRIJwUxhgtAffwaT7R3lcRxkk0HEm' #'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
 
-premium_search_args = load_credentials("twitter_keys.yaml",
+'''
+with open('project_extension/tw_premium_api.yml', 'r') as file:
+    premium_dict = yaml.safe_load(file)['search_tweets_api']
+
+print(premium_dict)
+
+os.environ['SEARCHTWEETS_BEARER_TOKEN'] = premium_dict['bearer_token']
+os.environ['SEARCHTWEETS_ENDPOINT'] = premium_dict['endpoint']
+os.environ['SEARCHTWEETS_ACCOUNT_TYPE'] = premium_dict['account_type']
+
+premium_search_args = load_credentials("tw_premium_api.yaml",
+                                        account_type = 'premium',
                                        yaml_key="search_tweets_api",
-                                       env_overwrite=False)
-
-
-
-
+                                       env_overwrite=True)
+'''
+#######################
+## TWITTER API SETUP ##
+#######################
 
 #Access twitter data
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -50,18 +70,21 @@ def clean_tweet(tweet):
     return r
 
 def query_data_premium(query, num_tweets):
-    filtered = query + '-filter:retweets'
-    rule = gen_rule_payload(query, results_per_call=100, from_date="2022-09-01", to_date="2022-12-31") 
+    query = query + ' lang:EN '
+    tweets = tweepy.Cursor(api.search_30_day, 
+                            label = 'sim1', 
+                            query=query).items(num_tweets)
 
-    rs = ResultStream(rule_payload=rule,
-                  max_results=num_tweets,
-                  max_pages=1,
-                  **premium_search_args)
-
-    tweets = list(rs.stream())
 
     # Create a list of the tweets, the users, and their location
-    results = [[tweet.text, tweet.user.screen_name, tweet.place.country_code] for tweet in tweets]
+    results = []
+    for tweet in tweets:
+        try:
+            tweet_info = [tweet.text, tweet.user.screen_name, tweet.place.country_code]
+        except:
+            tweet_info = [tweet.text, tweet.user.screen_name, 'No Country Information']
+
+        results.append(tweet_info)
 
     # Convert the list into a dataframe
     df = pd.DataFrame(data=results, 
@@ -70,6 +93,16 @@ def query_data_premium(query, num_tweets):
     # Convert only the tweets into a list
     tqdm.pandas(desc='cleaning data')
     df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
+
+    # Convert the list into a dataframe
+    df = pd.DataFrame(data=results, 
+                        columns=['tweets','user', "location"])
+
+    # Convert only the tweets into a list
+    tqdm.pandas(desc='cleaning data')
+    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
+
+    return df, df['tweets'].values.tolist()
 
 def query_data(query, num_tweets):
 

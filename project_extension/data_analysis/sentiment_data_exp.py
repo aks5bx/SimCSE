@@ -9,6 +9,9 @@ def explore_data(df):
     print('DF INFO')
     print(df.info())
 
+    print('-')
+    print(set(df.location))
+
 def main():
     sentiment_df = pd.read_csv('tw_sentiment_df.csv')
     explore_data(sentiment_df)

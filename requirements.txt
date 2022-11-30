@@ -5,7 +5,6 @@ pandas
 scikit-learn
 prettytable
 gradio
-torch
 setuptools
 better-profanity
 textblob
