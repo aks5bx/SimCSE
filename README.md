@@ -153,7 +153,7 @@ conda env create --name <INSERT NAME> --file=sim_env.yml
 - (fifa) is the query arg
 - 1000 is the dataset length arg
 - Data output is `tw_sentiment_df.csv`
-- EDA is available in `data_analysis/sentiment_data_exp.ipynb`
+- EDA is available in `data_analysis/sentiment_data_exp.py`
 
 ## Extension I: Comparing BERT Model vs SimCSE Model 
 

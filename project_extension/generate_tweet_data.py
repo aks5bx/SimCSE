@@ -14,32 +14,21 @@ from searchtweets import ResultStream, gen_rule_payload, load_credentials
 from tweet_parser.tweet import Tweet
 import os
 import yaml 
+import json 
 
 ##################
 ## CONFIG SETUP ##
 ##################
 
+f = open('project_extension/tw_premium_api.json')
+premium_dict = json.load(f)['Premium Info']
+
 #Twitter developer keys and tokens
-consumer_key = '4AwgTr7tzLrOlcUzBTLHbGZtC' #'JJx1idjQNber5YWEiyABUc1zB'
-consumer_secret = 'ixWKhrso6ETcAzeSiLygb0Y7C1dOTuLOoWaPSrFh4FZsFXim5y' # 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
-access_token = '1132165624958820352-IikGwSWKfyjGlyTkfPNHSsgn3mp7Wf' # '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
-access_token_secret = 'eEAFheMItCkGFehifRIJwUxhgtAffwaT7R3lcRxkk0HEm' #'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
+consumer_key =  premium_dict['consumer_key'] #'JJx1idjQNber5YWEiyABUc1zB'
+consumer_secret = premium_dict['consumer_secret']  # 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
+access_token = premium_dict['access_token']  # '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
+access_token_secret = premium_dict['access_token_secret']  #'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
 
-'''
-with open('project_extension/tw_premium_api.yml', 'r') as file:
-    premium_dict = yaml.safe_load(file)['search_tweets_api']
-
-print(premium_dict)
-
-os.environ['SEARCHTWEETS_BEARER_TOKEN'] = premium_dict['bearer_token']
-os.environ['SEARCHTWEETS_ENDPOINT'] = premium_dict['endpoint']
-os.environ['SEARCHTWEETS_ACCOUNT_TYPE'] = premium_dict['account_type']
-
-premium_search_args = load_credentials("tw_premium_api.yaml",
-                                        account_type = 'premium',
-                                       yaml_key="search_tweets_api",
-                                       env_overwrite=True)
-'''
 #######################
 ## TWITTER API SETUP ##
 #######################
@@ -128,7 +117,6 @@ def query_data(query, num_tweets):
 
     return df, df['tweets'].values.tolist()
 
-
 def bin_polarity(score):
     if score > 0:
         sentiment = 1
@@ -137,7 +125,6 @@ def bin_polarity(score):
     else:
         sentiment = 0
     return sentiment
-
 
 def get_sentiment_scores(query, num_tweets, premium=True):
     if premium:
@@ -160,8 +147,7 @@ def get_sentiment_scores(query, num_tweets, premium=True):
         print(f'{label} count:', len(tweets_df[tweets_df['sentiment']==label_dict[label]]))
 
     #save to csv
-    tweets_df.to_csv('tw_sentiment_df.csv', index=False)
-
+    tweets_df.to_csv('tw_sentiment_df_' + str(num_tweets) + '.csv', index=False)
 
 def parse_args():
     arg_parser = ArgumentParser()
@@ -169,7 +155,6 @@ def parse_args():
     arg_parser.add_argument("num_tweets", type=int)
 
     return arg_parser.parse_args()
-
 
 if __name__ == '__main__':
     args = parse_args()
