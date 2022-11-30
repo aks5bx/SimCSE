@@ -4,6 +4,9 @@ simcse/__pycache__/
 *.py[cod]
 *$py.class
 
+# CSV Data
+./project_extension/tw_sentiment_df.csv
+
 # C extensions
 *.so
 

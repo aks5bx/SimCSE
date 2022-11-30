@@ -47,6 +47,7 @@ def query_data(query, num_tweets):
     filtered = query + '-filter:retweets'
 
     #Generate the latest tweets on the given query
+    print('querying twitter data...')
     tweets = tweepy.Cursor(api.search_tweets, 
                             q=filtered,
                             lang="en").items(num_tweets)
