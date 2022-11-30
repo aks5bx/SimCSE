@@ -1,4 +1,10 @@
-# NLP Team II Project Repo
+# **NLP Team II Project Repo**
+
+TABLE OF CONTENTS
+- Part I: Replication 
+- Part II: Extension Part 1
+
+# Part I: Replication 
 
 ## Setup
 
@@ -94,8 +100,6 @@ _The only differences here appear to be from differences in rounding._
 +-------+-------+-------+-------+-------+--------------+-----------------+-------+
 ```
 
-
-
 ## Debug Trial
 
 Train Results 
@@ -120,3 +124,5 @@ eval_avg_transfer = 41.16142857142857
 eval_sickr_spearman = nan
 eval_stsb_spearman = nan
 ```
+
+# Part II: Extention Part 1
