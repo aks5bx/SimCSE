@@ -21,7 +21,6 @@ premium_search_args = load_credentials("twitter_keys.yaml",
                                        env_overwrite=False)
 
 
-rule = gen_rule_payload("#covid19 #giuseppeconte lang:it", results_per_call=100, from_date="2020-12-14", to_date="2020-12-21") 
 
 
 
@@ -50,6 +49,27 @@ def clean_tweet(tweet):
     r = " ".join(word for word in r)
     return r
 
+def query_data_premium(query, num_tweets):
+    filtered = query + '-filter:retweets'
+    rule = gen_rule_payload(query, results_per_call=100, from_date="2022-09-01", to_date="2022-12-31") 
+
+    rs = ResultStream(rule_payload=rule,
+                  max_results=num_tweets,
+                  max_pages=1,
+                  **premium_search_args)
+
+    tweets = list(rs.stream())
+
+    # Create a list of the tweets, the users, and their location
+    results = [[tweet.text, tweet.user.screen_name, tweet.place.country_code] for tweet in tweets]
+
+    # Convert the list into a dataframe
+    df = pd.DataFrame(data=results, 
+                        columns=['tweets','user', "location"])
+
+    # Convert only the tweets into a list
+    tqdm.pandas(desc='cleaning data')
+    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
 
 def query_data(query, num_tweets):
 
@@ -86,8 +106,11 @@ def bin_polarity(score):
     return sentiment
 
 
-def get_sentiment_scores(query, num_tweets):
-    tweets_df, tweets = query_data(query, num_tweets)
+def get_sentiment_scores(query, num_tweets, premium=True):
+    if premium:
+        tweets_df, tweets = query_data_premium(query, num_tweets)
+    else:
+        tweets_df, tweets = query_data(query, num_tweets)
     
     # Define the sentiment objects using TextBlob
     sentiment_objects = [TextBlob(tweet) for tweet in tweets]
