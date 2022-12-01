@@ -5,5 +5,9 @@ pandas
 scikit-learn
 prettytable
 gradio
-torch
 setuptools
+better-profanity
+textblob
+tweepy
+searchtweets
+tweet-parser

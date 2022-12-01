@@ -1,3 +1,7 @@
+#############
+## IMPORTS ##
+#############
+
 import re 
 from argparse import ArgumentParser
 import tweepy 
@@ -6,20 +10,34 @@ from textblob import TextBlob
 import pandas as pd
 from better_profanity import profanity
 from tqdm import tqdm
+from searchtweets import ResultStream, gen_rule_payload, load_credentials
+from tweet_parser.tweet import Tweet
+import os
+import yaml 
+import json 
 
+##################
+## CONFIG SETUP ##
+##################
+
+f = open('project_extension/tw_premium_api.json')
+premium_dict = json.load(f)['Premium Info']
 
 #Twitter developer keys and tokens
-consumer_key = 'JJx1idjQNber5YWEiyABUc1zB'
-consumer_secret = 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
-access_token = '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
-access_token_secret = 'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
+consumer_key =  premium_dict['consumer_key'] #'JJx1idjQNber5YWEiyABUc1zB'
+consumer_secret = premium_dict['consumer_secret']  # 'Q0tCzowpFHjzqzRmj5vJ75bTSmkcdWr9tazq9fcKdsPdiT3a5i'
+access_token = premium_dict['access_token']  # '928358549054545921-54yjeXEHIWskQciTtcm8dM9BUszGCz7'
+access_token_secret = premium_dict['access_token_secret']  #'h0J44RtSKQOkHa04jW8mkNpq0JxL8F1lyMlNkS2yVZZvt'
 
+#######################
+## TWITTER API SETUP ##
+#######################
 
 #Access twitter data
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth)
+api = tweepy.API(auth, retry_count=10, retry_delay=5)
 
 # Create a function to clean the tweets. Remove profanity, unnecessary characters, spaces, and stopwords.
 def clean_tweet(tweet):
@@ -40,6 +58,40 @@ def clean_tweet(tweet):
     r = " ".join(word for word in r)
     return r
 
+def query_data_premium(query, num_tweets):
+    query = query + ' lang:EN '
+    tweets = tweepy.Cursor(api.search_30_day, 
+                            label = 'sim1', 
+                            query=query).items(num_tweets)
+
+
+    # Create a list of the tweets, the users, and their location
+    results = []
+    for tweet in tweets:
+        try:
+            tweet_info = [tweet.text, tweet.user.screen_name, tweet.place.country_code]
+        except:
+            tweet_info = [tweet.text, tweet.user.screen_name, 'No Country Information']
+
+        results.append(tweet_info)
+
+    # Convert the list into a dataframe
+    df = pd.DataFrame(data=results, 
+                        columns=['tweets','user', "location"])
+
+    # Convert only the tweets into a list
+    tqdm.pandas(desc='cleaning data')
+    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
+
+    # Convert the list into a dataframe
+    df = pd.DataFrame(data=results, 
+                        columns=['tweets','user', "location"])
+
+    # Convert only the tweets into a list
+    tqdm.pandas(desc='cleaning data')
+    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
+
+    return df, df['tweets'].values.tolist()
 
 def query_data(query, num_tweets):
 
@@ -65,7 +117,6 @@ def query_data(query, num_tweets):
 
     return df, df['tweets'].values.tolist()
 
-
 def bin_polarity(score):
     if score > 0:
         sentiment = 2
@@ -75,9 +126,11 @@ def bin_polarity(score):
         sentiment = 1
     return sentiment
 
-
-def get_sentiment_scores(query, num_tweets):
-    tweets_df, tweets = query_data(query, num_tweets)
+def get_sentiment_scores(query, num_tweets, premium=True):
+    if premium:
+        tweets_df, tweets = query_data_premium(query, num_tweets)
+    else:
+        tweets_df, tweets = query_data(query, num_tweets)
     
     # Define the sentiment objects using TextBlob
     sentiment_objects = [TextBlob(tweet) for tweet in tweets]
@@ -94,8 +147,7 @@ def get_sentiment_scores(query, num_tweets):
         print(f'{label} count:', len(tweets_df[tweets_df['sentiment']==label_dict[label]]))
 
     #save to csv
-    tweets_df.to_csv('tw_sentiment_df.csv', index=False)
-
+    tweets_df.to_csv('tw_sentiment_df_' + str(num_tweets) + '.csv', index=False)
 
 def parse_args():
     arg_parser = ArgumentParser()
@@ -103,7 +155,6 @@ def parse_args():
     arg_parser.add_argument("num_tweets", type=int)
 
     return arg_parser.parse_args()
-
 
 if __name__ == '__main__':
     args = parse_args()
