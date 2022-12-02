@@ -5,7 +5,6 @@ simcse/__pycache__/
 *$py.class
 
 # CSV Data
-**/*.csv
 
 # C extensions
 *.so
