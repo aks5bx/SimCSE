@@ -40,8 +40,6 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth, retry_count=10, retry_delay=5)
 
-
-
 def premium_setup(yaml_path):
     search_args = load_credentials(yaml_path,
                                    yaml_key="search_tweets_v2",
@@ -90,7 +88,7 @@ def query_data_premium_v2(query, search_args, stream=True, num_tweets=100):
 
     # Create a list of the tweets, the users, and their location
     results = []
-    for i, tweet in enumerate(tweets):
+    for i, tweet in enumerate(tqdm(tweets)):
         tweet = tweet['data'][i]
         tweet_info = [tweet['text'], tweet['id'], '0']
         results.append(tweet_info)
@@ -208,12 +206,25 @@ def get_sentiment_scores(query, num_tweets, premium=True):
 def parse_args():
     arg_parser = ArgumentParser()
     arg_parser.add_argument("query", type=str)
+    arg_parser.add_argument("country_subset", type=bool)
     arg_parser.add_argument("num_tweets", type=int)
 
     return arg_parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
+
+    if args.country_subset:
+        query = 'fifa' + ' ('
+        for country in ['ecuador', 'senegal', 'netherlands', 'england', 'iran', 'usa', 'wales', 
+                        'argentina', 'saudia arabia', 'mexico', 'poland', 'france', 'australia', 
+                        'denmark', 'tunisia', 'spain', 'costa rica', 'germany', 'japan', 'belgium', 
+                        'canada', 'morocco', 'croatia', 'brazil', 'serbia', 'switzerland', 'cameroon', 
+                        'portugal', 'ghana', 'uruguay', 'korea']:
+            query = query + country + ' OR ' + country.capitalize() + ' OR '
+        
+        query = query + 'FIFA) lang:en'
+
     get_sentiment_scores(args.query, args.num_tweets)
 
 
