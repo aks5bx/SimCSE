@@ -1,38 +1,25 @@
 import torch
 import torch.nn as nn
-import numpy as np
 
 
-class NeuralNet(nn.Module):
+class NeuralSentimentClassifier(nn.Module):
 
-    def __init__(self, sent_embeddings, hidden_dim: int):
-        super(NeuralNet, self).__init__()
+    def __init__(self, input_dim: int, hidden_dim: int, n_layers: int, n_classes=3):
+        super(NeuralSentimentClassifier, self).__init__()
 
-        self.sent_embeddings = sent_embeddings # batch_size x emb_dim
-        self.input_dim = sent_embeddings.size(-1)
+        self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         
-        self.model = nn.Sequential(
-            nn.Linear(self.input_dim, self.hidden_dim),
-            nn.ReLU(),
-            nn.Linear(self.hidden_dim, 1),
-            nn.Softmax()
-        )
+        self.layers = [nn.Linear(self.input_dim, self.hidden_dim), nn.ReLU()]
+        for i in range(n_layers):
+            self.layers += [nn.Linear(self.hidden_dim, self.hidden_dim), nn.ReLU()]
+        self.layers += [nn.Linear(self.hidden_dim, n_classes), nn.Softmax(dim=1)]
+
+        self.model = nn.Sequential(*self.layers)
     
     def forward(self, sent_embeddings) -> torch.Tensor:
         """Takes a 2D tensor of sentence embeddings and returns a tensor of class probabilities."""
 
         output = self.model(sent_embeddings)
         return output
-        
 
-class NeuralSentimentClassifier(object):
-    """Runs NeuralNet to generate sentiment probability scores and predictions for sentence embeddings"""
-    def __init__(self, sent_embeddings, hidden_dim: int):
-        self.sent_embeddings = sent_embeddings
-        self.hidden_dim = hidden_dim
-        self.neural_net = NeuralNet(self.sent_embeddings, self.hidden_dim)
-
-    def predict(self) -> int:
-        probs = self.neural_net.forward(self.sent_embeddings)
-        return probs, torch.argmax(probs)
