@@ -10,7 +10,8 @@ from textblob import TextBlob
 import pandas as pd
 from better_profanity import profanity
 from tqdm import tqdm
-from searchtweets import ResultStream, gen_rule_payload, load_credentials
+import searchtweets
+from searchtweets import ResultStream, gen_request_parameters, load_credentials, collect_results
 from tweet_parser.tweet import Tweet
 import os
 import yaml 
@@ -39,6 +40,15 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth, retry_count=10, retry_delay=5)
 
+
+
+def premium_setup(yaml_path):
+    search_args = load_credentials(yaml_path,
+                                   yaml_key="search_tweets_v2",
+                                   env_overwrite=False)
+    
+    return search_args    
+
 # Create a function to clean the tweets. Remove profanity, unnecessary characters, spaces, and stopwords.
 def clean_tweet(tweet):
     if type(tweet) == float:
@@ -57,6 +67,51 @@ def clean_tweet(tweet):
     r = [w for w in r if not w in stopwords]
     r = " ".join(word for word in r)
     return r
+
+def query_data_premium_v2(query, search_args, stream=True, num_tweets=100):
+    query = gen_request_parameters(query, 
+                                   granularity = None, 
+                                   start_time = '2022-11-26',
+                                   end_time = '2022-12-02',
+                                   expansions = 'geo.place_id',
+                                   place_fields = 'country_code',
+                                   results_per_call=100)
+
+    if stream:
+        rs = ResultStream(request_parameters=query,
+                            max_results=num_tweets,
+                            max_pages=1,
+                            **search_args)
+        tweets = list(rs.stream())
+    else:
+        tweets = collect_results(query,
+                                max_tweets=100,
+                                result_stream_args=search_args)
+
+    # Create a list of the tweets, the users, and their location
+    results = []
+    for i, tweet in enumerate(tweets):
+        tweet = tweet['data'][i]
+        tweet_info = [tweet['text'], tweet['id'], '0']
+        results.append(tweet_info)
+
+    # Convert the list into a dataframe
+    df = pd.DataFrame(data=results, 
+                        columns=['tweets','user', "location"])
+
+    # Convert only the tweets into a list
+    tqdm.pandas(desc='cleaning data')
+    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
+
+    # Convert the list into a dataframe
+    df = pd.DataFrame(data=results, 
+                        columns=['tweets','user', "location"])
+
+    # Convert only the tweets into a list
+    tqdm.pandas(desc='cleaning data')
+    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
+
+    return df, df['tweets'].values.tolist()    
 
 def query_data_premium(query, num_tweets):
     query = query + ' lang:EN '
@@ -128,7 +183,8 @@ def bin_polarity(score):
 
 def get_sentiment_scores(query, num_tweets, premium=True):
     if premium:
-        tweets_df, tweets = query_data_premium(query, num_tweets)
+        search_args = premium_setup('project_extension/twitter_keys.yaml')
+        tweets_df, tweets = query_data_premium_v2(query, search_args, True, num_tweets)
     else:
         tweets_df, tweets = query_data(query, num_tweets)
     
