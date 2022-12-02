@@ -149,11 +149,13 @@ conda env create --name <INSERT NAME>
 
 #### Data Generation & EDA: 
 
-- Run the file `generate_tweet_data.py fifa 1000` to generate tweet-sentiment dataset 
+_Note: This has already been run and the dataset is available in the repo_
+
+1. Run the file `generate_tweet_data.py "fifa" <subset> <num datapoints>`  
 - (fifa) is the query arg
-- 1000 is the dataset length arg
-- Data output is `tw_sentiment_df.csv`
-- EDA is available in `data_analysis/sentiment_data_exp.py`
+- if subset arg is `'subset'` then we will only take tweets that contain countries in the world cup (groups B, D, G)
+2. Locate data output in the file `sentiment_data/tw_sentiment_df.csv` (with an extension that signifies the dataset size as _XX)
+3. Limited EDA is available in `data_analysis/sentiment_data_exp.py`
 
 ## Extension I: Training and Comparing BERT Model vs SimCSE Model on Sentiment Prediction Task
 
@@ -179,5 +181,12 @@ Additional options for running train_sentiment_classifier.py:
 
 `--path_to_data` tw_sentiment_df.csv by default, specifies path to twitter data (must be csv with 'tweet' and 'sentiment' columns)
 
-`--tune` if included, trains a number of different model versions and
-outputs results to experiment_results.csv
+- Train the classifier using `train_sentiment_classifier.py`
+
+## Extension II: Feature Permutation 
+
+- Under construction 
+
+## Extension III (if needed): Sentiment Analysis 
+
+- We could do sentiment analysis by country..if we want
