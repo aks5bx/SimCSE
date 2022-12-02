@@ -66,36 +66,41 @@ def clean_tweet(tweet):
     r = " ".join(word for word in r)
     return r
 
-def query_data_premium_v2(query, search_args, stream=True, num_tweets=100):
+def query_data_premium_v2(query, search_args, num_tweets, stream=True):
     query = gen_request_parameters(query, 
                                    granularity = None, 
                                    start_time = '2022-11-26',
                                    end_time = '2022-12-02',
-                                   expansions = 'geo.place_id',
-                                   place_fields = 'country_code',
-                                   results_per_call=100)
+                                   results_per_call=50)
 
     if stream:
+        print('USING METHOD : Result Stream')
         rs = ResultStream(request_parameters=query,
-                            max_results=num_tweets,
-                            max_pages=1,
-                            **search_args)
+                          max_tweets=num_tweets,
+                          max_requests=None,
+                          **search_args)
+
         tweets = list(rs.stream())
+        print('Tweets Len:', len(tweets))
     else:
+        print('USING METHOD : Collect Results')
         tweets = collect_results(query,
                                 max_tweets=100,
                                 result_stream_args=search_args)
 
     # Create a list of the tweets, the users, and their location
     results = []
-    for i, tweet in enumerate(tqdm(tweets)):
-        tweet = tweet['data'][i]
-        tweet_info = [tweet['text'], tweet['id'], '0']
-        results.append(tweet_info)
+    for tweet in tqdm(tweets):
+        for tweet_data in tqdm(tweet['data']):
+            tweet_info = [tweet_data['text'], tweet_data['id'], '0']
+            results.append(tweet_info)
 
     # Convert the list into a dataframe
     df = pd.DataFrame(data=results, 
                         columns=['tweets','user', "location"])
+
+    print('')
+    print(len(results))
 
     # Convert only the tweets into a list
     tqdm.pandas(desc='cleaning data')
@@ -110,41 +115,6 @@ def query_data_premium_v2(query, search_args, stream=True, num_tweets=100):
     df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
 
     return df, df['tweets'].values.tolist()    
-
-def query_data_premium(query, num_tweets):
-    query = query + ' lang:EN '
-    tweets = tweepy.Cursor(api.search_30_day, 
-                            label = 'sim1', 
-                            query=query).items(num_tweets)
-
-
-    # Create a list of the tweets, the users, and their location
-    results = []
-    for tweet in tweets:
-        try:
-            tweet_info = [tweet.text, tweet.user.screen_name, tweet.place.country_code]
-        except:
-            tweet_info = [tweet.text, tweet.user.screen_name, 'No Country Information']
-
-        results.append(tweet_info)
-
-    # Convert the list into a dataframe
-    df = pd.DataFrame(data=results, 
-                        columns=['tweets','user', "location"])
-
-    # Convert only the tweets into a list
-    tqdm.pandas(desc='cleaning data')
-    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
-
-    # Convert the list into a dataframe
-    df = pd.DataFrame(data=results, 
-                        columns=['tweets','user', "location"])
-
-    # Convert only the tweets into a list
-    tqdm.pandas(desc='cleaning data')
-    df['tweets'] = df['tweets'].progress_apply(lambda x: clean_tweet(x))
-
-    return df, df['tweets'].values.tolist()
 
 def query_data(query, num_tweets):
 
@@ -182,7 +152,8 @@ def bin_polarity(score):
 def get_sentiment_scores(query, num_tweets, premium=True):
     if premium:
         search_args = premium_setup('project_extension/twitter_keys.yaml')
-        tweets_df, tweets = query_data_premium_v2(query, search_args, True, num_tweets)
+        tweets_df, tweets = query_data_premium_v2(query, search_args, num_tweets, stream=True)
+        print('Sent Score :', len(tweets))
     else:
         tweets_df, tweets = query_data(query, num_tweets)
     
@@ -198,7 +169,8 @@ def get_sentiment_scores(query, num_tweets, premium=True):
 
     label_dict = {'pos': 1, 'neg': -1, 'neu': 0}
     for label in label_dict:
-        print(f'{label} count:', len(tweets_df[tweets_df['sentiment']==label_dict[label]]))
+        pass
+        #print(f'{label} count:', len(tweets_df[tweets_df['sentiment']==label_dict[label]]))
 
     #save to csv
     tweets_df.to_csv('tw_sentiment_df_' + str(num_tweets) + '.csv', index=False)
@@ -206,7 +178,7 @@ def get_sentiment_scores(query, num_tweets, premium=True):
 def parse_args():
     arg_parser = ArgumentParser()
     arg_parser.add_argument("query", type=str)
-    arg_parser.add_argument("country_subset", type=bool)
+    arg_parser.add_argument("country_subset", type=str)
     arg_parser.add_argument("num_tweets", type=int)
 
     return arg_parser.parse_args()
@@ -214,17 +186,20 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    if args.country_subset:
+    if args.country_subset == 'subset':
         query = 'fifa' + ' ('
-        for country in ['ecuador', 'senegal', 'netherlands', 'england', 'iran', 'usa', 'wales', 
-                        'argentina', 'saudia arabia', 'mexico', 'poland', 'france', 'australia', 
-                        'denmark', 'tunisia', 'spain', 'costa rica', 'germany', 'japan', 'belgium', 
-                        'canada', 'morocco', 'croatia', 'brazil', 'serbia', 'switzerland', 'cameroon', 
-                        'portugal', 'ghana', 'uruguay', 'korea']:
+        for country in ['england', 'iran', 'usa', 'wales', 
+                        'france', 'australia', 'denmark', 'tunisia', 
+                        'brazil', 'serbia', 'switzerland', 'cameroon']:
             query = query + country + ' OR ' + country.capitalize() + ' OR '
         
         query = query + 'FIFA) lang:en'
 
-    get_sentiment_scores(args.query, args.num_tweets)
+        print('Using Query:')
+        print(query)
+        print('--' * 75)
+        get_sentiment_scores(query, args.num_tweets, premium=True)
+    else:
+        get_sentiment_scores(args.query, args.num_tweets, premium=True)
 
 
