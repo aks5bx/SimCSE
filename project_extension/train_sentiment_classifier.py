@@ -22,7 +22,7 @@ print('Running on', device)
 BATCHSIZE = 1024 if device=='cuda' else 32
 NEPOCHS = 25 if device=='cuda' else 10
 
-def prepare_datasets(twitter_data):
+def prepare_datasets(twitter_data, n_samples):
     twitter_data = twitter_data.dropna(subset='tweets')
     indices = np.arange(len(twitter_data))
     np.random.shuffle(indices)
@@ -38,6 +38,9 @@ def prepare_datasets(twitter_data):
         inds = split_inds[split]
         data_splits[split]['sentences'] = sentences[inds]
         data_splits[split]['sent_labels'] = sentiment_scores[inds]
+        if split == 'train':
+            data_splits[split]['sentences'] = data_splits[split]['sentences'][:n_samples]
+            data_splits[split]['sent_labels'] = data_splits[split]['sentences'][:n_samples]
         
     return TweetDataset(data_splits['train']), TweetDataset(data_splits['val']), TweetDataset(data_splits['test'])
 
@@ -106,9 +109,9 @@ def eval(model, criterion, val_dataset, hparams, batch_collater):
     return np.mean(val_accs), np.mean(val_losses)
 
 
-def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encoder2=None, save=False):
+def train_classifier(tokenizer1, encoder1, data, hparams, args, tokenizer2=None, encoder2=None):
 
-    train_dataset, val_dataset, test_dataset = prepare_datasets(data)
+    train_dataset, val_dataset, test_dataset = prepare_datasets(data, args.n_samples)
     batch_collater = partial(tweet_batch_collate, tokenizer1=tokenizer1, encoder1=encoder1, tokenizer2=tokenizer2, encoder2=encoder2, device=device)
 
     model, criterion, optimizer = init_model(hparams)
@@ -123,13 +126,16 @@ def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encod
         epoch_results[hparam] = hparams[hparam]
     epoch_results['timestamp'] = int(time.time())
     epoch_results['model'] = hparams['model']
-    
-    if not os.path.exists('experiment_results.csv'):
-        epoch_results.to_csv('experiment_results.csv', index=False)
-    else:
-        epoch_results.to_csv('experiment_results.csv', mode='a', index=False, header=False)
 
-    if save == True:
+    if args.exp_output == 'n_sample_experiment_results.csv':
+        epoch_results['n_samples'] = args.n_samples
+    
+    if not os.path.exists(args.exp_output):
+        epoch_results.to_csv(args.exp_output, index=False)
+    else:
+        epoch_results.to_csv(args.exp_output, mode='a', index=False, header=False)
+
+    if args.save == True:
         path = f'{hparams["model"]}_final.pt'
         torch.save(model.state_dict(), path)
 
@@ -177,6 +183,8 @@ def parse_args():
     arg_parser.add_argument("--path_to_data", type=str, default="tw_sentiment_df_10000.csv")
     arg_parser.add_argument("--tune", action="store_true")
     arg_parser.add_argument("--save", action="store_true")
+    arg_parser.add_argument("--n_samples", type=int, default=10000)
+    arg_parser.add_argument("--exp_output", default="n_sample_experiment_results.csv")
     
     return arg_parser.parse_args()
 
@@ -193,12 +201,13 @@ if __name__ == '__main__':
     twitter_data = pd.read_csv(args.path_to_data)
 
     hparam_sets = get_hparams(args)
+
     for hparams in tqdm(hparam_sets, desc='experiment'):
         if args.model == 'simcse' or args.model == 'bert':
             tokenizer = AutoTokenizer.from_pretrained(models[args.model])
             encoder = AutoModel.from_pretrained(models[args.model]).to(device)
             hparams['input_dim'] = encoder.embeddings.token_type_embeddings.embedding_dim
-            train_classifier(tokenizer, encoder, twitter_data, hparams, save=args.save)
+            train_classifier(tokenizer, encoder, twitter_data, hparams, args)
 
         elif args.model == 'both':
             tokenizer1 = AutoTokenizer.from_pretrained(models['simcse'])
@@ -207,7 +216,7 @@ if __name__ == '__main__':
             encoder2 = AutoModel.from_pretrained(models['bert']).to(device)
             hparams['input_dim'] = encoder1.embeddings.token_type_embeddings.embedding_dim + \
                                 encoder2.embeddings.token_type_embeddings.embedding_dim
-            train_classifier(tokenizer1, encoder1, twitter_data, hparams, tokenizer2, encoder2, save=args.save)
+            train_classifier(tokenizer1, encoder1, twitter_data, hparams, args, tokenizer2, encoder2)
     
         else:
             raise ValueError(f'Invalid choice of model: {args.model}')
