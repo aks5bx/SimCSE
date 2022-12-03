@@ -3,6 +3,7 @@ from functools import partial
 import itertools
 import os
 import time
+import json
 
 import pandas as pd
 import numpy as np
@@ -129,7 +130,7 @@ def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encod
         epoch_results.to_csv('experiment_results.csv', mode='a', index=False, header=False)
 
     if save == True:
-        path = f'{hparams["model"]}_{str(int(epoch_results["timestamp"]))}.pt'
+        path = f'{hparams["model"]}_final.pt'
         torch.save(model.state_dict(), path)
 
 
@@ -152,12 +153,18 @@ def get_hparams(args):
                                 'model': args.model})
     else:
         # Set hparams to best parameters found through tuning to date
+        best_hparams = json.load(open('best_hparams.json', 'r'))
+
         if args.model == 'simcse':
-            hparam_sets = [{'hidden_dim': 512, 'learning_rate': 5e-4, 'num_epochs': NEPOCHS, 'batch_size': BATCHSIZE, 'n_layers': 1}]
+            hparams = best_hparams['simcse']
         elif args.model == 'bert':
-            hparam_sets = [{'hidden_dim': 256, 'learning_rate': 5e-4, 'num_epochs': NEPOCHS, 'batch_size': BATCHSIZE, 'n_layers': 2}]
+            hparams = best_hparams['bert']
         elif args.model == 'both':
-            hparam_sets = [{'hidden_dim': 256, 'learning_rate': 5e-4, 'num_epochs': NEPOCHS, 'batch_size': BATCHSIZE, 'n_layers': 1}]
+            hparams = best_hparams['both']
+        
+        hparams['num_epochs'] = NEPOCHS
+        hparams['batch_size'] = BATCHSIZE
+        hparam_sets = [hparams]
 
     return hparam_sets
 
