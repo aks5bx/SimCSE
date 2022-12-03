@@ -54,7 +54,7 @@ def init_model(hparams, n_classes=3):
     return model, criterion, optimizer 
 
 
-def train(model, optimizer, criterion, train_dataset, val_dataset, batch_collater, hparams):
+def train(model, optimizer, criterion, train_dataset, val_dataset, batch_collater, hparams, batch_collater_val=None):
     epoch_train_losses = []
     epoch_val_losses = []
     epoch_val_accs = []
@@ -76,7 +76,11 @@ def train(model, optimizer, criterion, train_dataset, val_dataset, batch_collate
         epoch_loss = np.mean(train_losses_sub)
         epoch_train_losses.append(epoch_loss)
 
-        epoch_val_acc, epoch_val_loss = eval(model, criterion, val_dataset, hparams, batch_collater)
+        if batch_collater_val == None:
+            epoch_val_acc, epoch_val_loss = eval(model, criterion, val_dataset, hparams, batch_collater)
+        else:
+            epoch_val_acc, epoch_val_loss = eval(model, criterion, val_dataset, hparams, batch_collater_val)
+
         epoch_val_accs.append(epoch_val_acc)
         epoch_val_losses.append(epoch_val_loss)
     
@@ -106,13 +110,22 @@ def eval(model, criterion, val_dataset, hparams, batch_collater):
     return np.mean(val_accs), np.mean(val_losses)
 
 
-def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encoder2=None, save=False):
+def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encoder2=None, permute=None, save=False):
 
     train_dataset, val_dataset, test_dataset = prepare_datasets(data)
-    batch_collater = partial(tweet_batch_collate, tokenizer1=tokenizer1, encoder1=encoder1, tokenizer2=tokenizer2, encoder2=encoder2, device=device)
+
+    if permute != None:
+        batch_collater = partial(tweet_batch_collate, tokenizer1=tokenizer1, encoder1=encoder1, tokenizer2=tokenizer2, encoder2=encoder2, permute1 = permute[0], permute2 = permute[1], device=device)
+        batch_collater_val = partial(tweet_batch_collate, tokenizer1=tokenizer1, encoder1=encoder1, tokenizer2=tokenizer2, encoder2=encoder2, permute1 = permute[0], permute2 = permute[1], device=device)
+    else:
+        batch_collater = partial(tweet_batch_collate, tokenizer1=tokenizer1, encoder1=encoder1, tokenizer2=tokenizer2, encoder2=encoder2, device=device)
 
     model, criterion, optimizer = init_model(hparams)
-    epoch_train_losses, epoch_val_losses, epoch_val_accs = train(model, optimizer, criterion, train_dataset, val_dataset, batch_collater, hparams)
+
+    if permute != None:
+        epoch_train_losses, epoch_val_losses, epoch_val_accs = train(model, optimizer, criterion, train_dataset, val_dataset, batch_collater, hparams, batch_collater_val)
+    else:
+        epoch_train_losses, epoch_val_losses, epoch_val_accs = train(model, optimizer, criterion, train_dataset, val_dataset, batch_collater, hparams)
 
     epoch_results = pd.DataFrame()
     epoch_results['epoch'] = np.arange(len(epoch_train_losses))
@@ -177,6 +190,8 @@ def parse_args():
     arg_parser.add_argument("--path_to_data", type=str, default="tw_sentiment_df_10000.csv")
     arg_parser.add_argument("--tune", action="store_true")
     arg_parser.add_argument("--save", action="store_true")
+    arg_parser.add_argument("--permute1", type=str, default="N")
+    arg_parser.add_argument("--permute2", type=str, default="N")
     
     return arg_parser.parse_args()
 
@@ -189,6 +204,11 @@ if __name__ == '__main__':
     args = parse_args()
     models = {'simcse': 'princeton-nlp/sup-simcse-bert-base-uncased',
               'bert': 'bert-base-uncased'}
+
+    if args.permute1 == 'N' and args.permute2 == 'N':
+        permute = None
+    else:
+        permute = (args.permute1, args.permute2)
 
     twitter_data = pd.read_csv(args.path_to_data)
 
@@ -207,7 +227,7 @@ if __name__ == '__main__':
             encoder2 = AutoModel.from_pretrained(models['bert']).to(device)
             hparams['input_dim'] = encoder1.embeddings.token_type_embeddings.embedding_dim + \
                                 encoder2.embeddings.token_type_embeddings.embedding_dim
-            train_classifier(tokenizer1, encoder1, twitter_data, hparams, tokenizer2, encoder2, save=args.save)
+            train_classifier(tokenizer1, encoder1, twitter_data, hparams, tokenizer2, encoder2, permute=permute, save=args.save)
     
         else:
             raise ValueError(f'Invalid choice of model: {args.model}')

@@ -70,7 +70,7 @@ def query_data_premium_v2(query, search_args, num_tweets, stream=True):
     query = gen_request_parameters(query, 
                                    granularity = None, 
                                    start_time = '2022-11-26',
-                                   end_time = '2022-12-02',
+                                   end_time = '2022-12-03',
                                    results_per_call=50)
 
     if stream:
