@@ -133,6 +133,8 @@ def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encod
         path = f'{hparams["model"]}_final.pt'
         torch.save(model.state_dict(), path)
 
+    print('Best Validation Accuracy:', np.max(epoch_val_accs))
+
 
 def get_hparams(args):
     
