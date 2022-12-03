@@ -8,7 +8,7 @@ class TweetDataset(Dataset):
     """
 
     def __init__(self, data):
-        self.embeddings = data['embeddings']
+        self.sentences = data['sentences']
         self.sent_labels = data['sent_labels']
         
     def __len__(self):
@@ -19,19 +19,27 @@ class TweetDataset(Dataset):
         Triggered when you call dataset[i]
         """
 
-        return (self.embeddings[idx], self.sent_labels[idx])
+        return (self.sentences[idx], self.sent_labels[idx])
 
 
-def get_sent_embeddings(tokenizer1, encoder1, tokenizer2, encoder2, device, sentences):
-    inputs1 = tokenizer1(sentences, padding=True, truncation=True, return_tensors='pt').to(device)
+def get_sent_embeddings(tokenizer, encoder, sentences, device):
+    inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt').to(device)
+
     with torch.no_grad():
-        embeddings = encoder1(**inputs1, output_hidden_states=True, return_dict=True).pooler_output
-    
-    if tokenizer2 and encoder2:
-        inputs2 = tokenizer2(sentences, padding=True, truncation=True, return_tensors='pt').to(device)
-        embeddings2 = encoder2(**inputs2, output_hidden_states=True, return_dict=True).pooler_output
-
-        embeddings = torch.cat((embeddings, embeddings2), dim=1)
+        embeddings = encoder(**inputs, output_hidden_states=True, return_dict=True).pooler_output
     
     return embeddings
+
+
+def tweet_batch_collate(batch, tokenizer1, encoder1, tokenizer2, encoder2, device):
+    sentences = [b[0] for b in batch]
+    labels = torch.LongTensor([b[1] for b in batch])
+
+    embeddings = get_sent_embeddings(tokenizer1, encoder1, sentences, device)
+    
+    if tokenizer2 and encoder2:
+        embeddings2 = get_sent_embeddings(tokenizer2, encoder2, sentences, device)
+        embeddings = torch.cat((embeddings, embeddings2), dim=1)
+
+    return (embeddings, labels, sentences)
 
