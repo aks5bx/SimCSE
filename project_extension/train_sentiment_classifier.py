@@ -174,7 +174,7 @@ def get_hparams(args):
                                 'model': args.model})
     else:
         # Set hparams to best parameters found through tuning to date
-        best_hparams = json.load(open('best_hparams.json', 'r'))
+        best_hparams = json.load(open('project_extension/best_hparams.json', 'r'))
 
         if args.model == 'simcse':
             hparams = best_hparams['simcse']
@@ -193,14 +193,16 @@ def get_hparams(args):
 def parse_args():
     arg_parser = ArgumentParser()
     arg_parser.add_argument("model", choices=['simcse', 'bert', 'both'])
-    arg_parser.add_argument("--path_to_data", type=str, default="tw_sentiment_df_10000.csv")
+    arg_parser.add_argument("--path_to_data", default="tw_sentiment_df_10000.csv")
     arg_parser.add_argument("--tune", action="store_true")
     arg_parser.add_argument("--save", action="store_true")
-    arg_parser.add_argument("--permute1", type=str, default="N")
-    arg_parser.add_argument("--permute2", type=str, default="N")
+    arg_parser.add_argument("--permute1", default="N")
+    arg_parser.add_argument("--permute2", default="N")
     arg_parser.add_argument("--n_samples", type=int, default=10000)
     arg_parser.add_argument("--exp_output", default="n_sample_experiment_results.csv")
     
+    print('--' * 75)
+    print('Args Parsed')
     return arg_parser.parse_args()
 
 
@@ -217,25 +219,36 @@ if __name__ == '__main__':
         permute = None
     else:
         permute = (args.permute1, args.permute2)
+        print('--' * 75)
+        print('Permuting', permute[0], 'and', permute[1])
 
     twitter_data = pd.read_csv(args.path_to_data)
-
     hparam_sets = get_hparams(args)
+
+    print('--' * 75)
+    print('Read in CSV and Hyperparameters')
 
     for hparams in tqdm(hparam_sets, desc='experiment'):
         if args.model == 'simcse' or args.model == 'bert':
             tokenizer = AutoTokenizer.from_pretrained(models[args.model])
             encoder = AutoModel.from_pretrained(models[args.model]).to(device)
             hparams['input_dim'] = encoder.embeddings.token_type_embeddings.embedding_dim
+            print('--' * 75)
+            print('training classifier')
             train_classifier(tokenizer, encoder, twitter_data, hparams, args)
 
         elif args.model == 'both':
             tokenizer1 = AutoTokenizer.from_pretrained(models['simcse'])
             encoder1 = AutoModel.from_pretrained(models['simcse']).to(device)
+            print('--' * 75)
+            print('Completed tokenizer and encoder initialization')
             tokenizer2 = AutoTokenizer.from_pretrained(models['bert'])
+
             encoder2 = AutoModel.from_pretrained(models['bert']).to(device)
             hparams['input_dim'] = encoder1.embeddings.token_type_embeddings.embedding_dim + \
                                 encoder2.embeddings.token_type_embeddings.embedding_dim
+            print('--' * 75)
+            print('training classifier')                                
             train_classifier(tokenizer1, encoder1, twitter_data, hparams, tokenizer2, encoder2, permute=permute, save=args.save)
     
         else:
