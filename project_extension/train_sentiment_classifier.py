@@ -23,7 +23,7 @@ BATCHSIZE = 1024 if device=='cuda' else 32
 NEPOCHS = 25 if device=='cuda' else 10
 
 def prepare_datasets(twitter_data, n_samples):
-    twitter_data = twitter_data.dropna(subset='tweets')
+    twitter_data = twitter_data.dropna(subset='tweets').head(n_samples)
     indices = np.arange(len(twitter_data))
     np.random.shuffle(indices)
     train_ind, val_ind, test_ind = np.split(indices, [int(len(indices)*0.7), int(len(indices)*0.85)]) # 70-15-15 train/val/test split
@@ -38,9 +38,6 @@ def prepare_datasets(twitter_data, n_samples):
         inds = split_inds[split]
         data_splits[split]['sentences'] = sentences[inds]
         data_splits[split]['sent_labels'] = sentiment_scores[inds]
-        if split == 'train':
-            data_splits[split]['sentences'] = data_splits[split]['sentences'][:n_samples]
-            data_splits[split]['sent_labels'] = data_splits[split]['sentences'][:n_samples]
         
     return TweetDataset(data_splits['train']), TweetDataset(data_splits['val']), TweetDataset(data_splits['test'])
 
