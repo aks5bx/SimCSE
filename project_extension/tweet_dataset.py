@@ -31,14 +31,21 @@ def get_sent_embeddings(tokenizer, encoder, sentences, device):
     return embeddings
 
 
-def tweet_batch_collate(batch, tokenizer1, encoder1, tokenizer2, encoder2, device):
+def tweet_batch_collate(batch, tokenizer1, encoder1, tokenizer2, encoder2, device, permute1=False, permute2=False):
     sentences = [b[0] for b in batch]
     labels = torch.LongTensor([b[1] for b in batch])
 
     embeddings = get_sent_embeddings(tokenizer1, encoder1, sentences, device)
-    
-    if tokenizer2 and encoder2:
+
+    if permute1:
+        embeddings = embeddings[torch.randperm(embeddings.size()[0])]
+
+    if tokenizer2 and encoder2 and not permute2:
         embeddings2 = get_sent_embeddings(tokenizer2, encoder2, sentences, device)
+        embeddings = torch.cat((embeddings, embeddings2), dim=1)
+    elif tokenizer2 and encoder2 and permute2:
+        embeddings2 = get_sent_embeddings(tokenizer2, encoder2, sentences, device)
+        embeddings2 = embeddings2[torch.randperm(embeddings2.size()[0])]
         embeddings = torch.cat((embeddings, embeddings2), dim=1)
 
     return (embeddings, labels, sentences)
