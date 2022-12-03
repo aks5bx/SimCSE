@@ -180,7 +180,9 @@ feeding into neural sentiment classifier.
 Additional options for running train_sentiment_classifier.py:
 
 `--path_to_data` tw_sentiment_df.csv by default, specifies path to twitter data (must be csv with 'tweet' and 'sentiment' columns)
+
 `--tune` tunes model with 45 different hparam configurations
+
 `--save` saves model state dict at the end of training as `[model]_final.pt`
 
 - Train the classifier using `train_sentiment_classifier.py`
