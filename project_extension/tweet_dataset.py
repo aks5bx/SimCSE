@@ -37,16 +37,21 @@ def tweet_batch_collate(batch, tokenizer1, encoder1, tokenizer2, encoder2, devic
 
     embeddings = get_sent_embeddings(tokenizer1, encoder1, sentences, device)
 
-    if permute1:
-        embeddings = embeddings[torch.randperm(embeddings.size()[0])]
+    if permute1 == 'Y':
+        print('--->Permuting Sim CSE<---')
+        indices = torch.argsort(torch.rand(*embeddings.shape), dim=-1)
+        embeddings = embeddings[torch.arange(embeddings.shape[0]).unsqueeze(-1), indices]
 
-    if tokenizer2 and encoder2 and not permute2:
+    if tokenizer2 and encoder2 and permute2 == 'N':
         embeddings2 = get_sent_embeddings(tokenizer2, encoder2, sentences, device)
         embeddings = torch.cat((embeddings, embeddings2), dim=1)
-    elif tokenizer2 and encoder2 and permute2:
+    elif tokenizer2 and encoder2 and permute2 == 'Y':
+        print('--->Permuting BERT<---')
         embeddings2 = get_sent_embeddings(tokenizer2, encoder2, sentences, device)
-        embeddings2 = embeddings2[torch.randperm(embeddings2.size()[0])]
-        embeddings = torch.cat((embeddings, embeddings2), dim=1)
+        indices = torch.argsort(torch.rand(*embeddings2.shape), dim=-1)
+        embeddings2 = embeddings2[torch.arange(embeddings2.shape[0]).unsqueeze(-1), indices]
+
+        embeddings = torch.cat((embeddings, embeddings2), dim=1)        
 
     return (embeddings, labels, sentences)
 

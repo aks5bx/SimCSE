@@ -189,7 +189,8 @@ Additional options for running train_sentiment_classifier.py:
 
 ## Extension II: Feature Permutation 
 
-- Under construction 
+- Permute SimCSE: est Validation Accuracy: 0.4626709726443769    
+- Permute BERT: Best Validation Accuracy: 0.44376899696048633
 
 ## Extension III (if needed): Sentiment Analysis 
 
