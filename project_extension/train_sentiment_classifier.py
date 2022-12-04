@@ -110,9 +110,9 @@ def eval(model, criterion, val_dataset, hparams, batch_collater):
     return np.mean(val_accs), np.mean(val_losses)
 
 
-def train_classifier(tokenizer1, encoder1, data, hparams, tokenizer2=None, encoder2=None, permute=None, save=False):
+def train_classifier(tokenizer1, encoder1, data, hparams, args, tokenizer2=None, encoder2=None, permute=None):
 
-    train_dataset, val_dataset, test_dataset = prepare_datasets(data)
+    train_dataset, val_dataset, test_dataset = prepare_datasets(data, args.n_samples)
 
     if permute != None:
         batch_collater = partial(tweet_batch_collate, tokenizer1=tokenizer1, encoder1=encoder1, tokenizer2=tokenizer2, encoder2=encoder2, permute1 = permute[0], permute2 = permute[1], device=device)
@@ -233,7 +233,7 @@ if __name__ == '__main__':
             encoder2 = AutoModel.from_pretrained(models['bert']).to(device)
             hparams['input_dim'] = encoder1.embeddings.token_type_embeddings.embedding_dim + \
                                 encoder2.embeddings.token_type_embeddings.embedding_dim
-            train_classifier(tokenizer1, encoder1, twitter_data, hparams, tokenizer2, encoder2, permute=permute, save=args.save)
+            train_classifier(tokenizer1, encoder1, twitter_data, hparams, args, tokenizer2, encoder2, permute=permute)
     
         else:
             raise ValueError(f'Invalid choice of model: {args.model}')
