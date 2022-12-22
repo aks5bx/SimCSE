@@ -200,11 +200,15 @@ The following results are paraphrased excerpts from our final paper:
 
 After hyperparameter tuning, we compared sentiment classification accuracy on our final holdout set at the respective optimal configurations for BERT and SimCSE. To ensure our results were robust, we computed mean test accuracy across 6 replicates per method, where in each replicate we generated random 70% train / 30% test splits, trained SimCSE and BERT feedforward networks using their optimal hyperparameters, and computed their respective test accuracies. We also conducted these experiments over a range of dataset sizes from 1,000 to 10,000 to determine the sensitivity of each sentiment classifier model to training size. 
 
-Our results highlight two key advantages our SimCSE sentiment classifier has over the baseline BERT model. The first is that we achieve higher maximum mean test accuracy with SimCSE compared to BERT. Our SimCSE sentiment classifier achieves a maximum mean test accuracy of 0.88, while its BERT-only counterpart achieves 0.74. 
+Our results highlight two key advantages our SimCSE sentiment classifier has over the baseline BERT model. The first is that we achieve higher maximum mean test accuracy with SimCSE compared to BERT. Our SimCSE sentiment classifier achieves a maximum mean test accuracy of 0.88, while its BERT-only counterpart achieves 0.74. (Visuals are included below). 
 
 The second advantage is that SimCSE achieves close to maximum performance with less training time and training data than BERT. We can see that the SimCSE sentiment classification model reaches near-maximum performance between epochs 5 and 10 and a dataset size of roughly 4,000, while the BERT classification model validation performance does not begin to level off until epoch 15 and a dataset size of 6,000.
 
 **In short, we are able to show marked improvement on our downstream sentiment classification task when using SimCSE Embeddings compared to Base BERT Embeddings.**
+
+#### Visualizations 
+
+The following visualizatoins compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
 
 ### Extension 2
 
