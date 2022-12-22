@@ -204,22 +204,33 @@ Our results highlight two key advantages our SimCSE sentiment classifier has ove
 
 The second advantage is that SimCSE achieves close to maximum performance with less training time and training data than BERT. We can see that the SimCSE sentiment classification model reaches near-maximum performance between epochs 5 and 10 and a dataset size of roughly 4,000, while the BERT classification model validation performance does not begin to level off until epoch 15 and a dataset size of 6,000.
 
-**In short, we are able to show marked improvement on our downstream sentiment classification task when using SimCSE Embeddings compared to Base BERT Embeddings.**
+#### Takeaway
+
+In short, we are able to show marked improvement on our downstream sentiment classification task when using SimCSE Embeddings compared to Base BERT Embeddings.
 
 #### Visualizations 
 
-The following visualizatoins compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
+The following visualizations compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
 
 <p align="center">
-<img src="https://github.com/aks5bx/SimCSE/blob/main/extension1.png" width=50% height=50%/>
+<img src="https://github.com/aks5bx/SimCSE/blob/main/extension1.png" width=25% height=25%/>
 </p>
-
 
 ### Extension 2
 
 We found that after permuting the BERT embeddings, the model attained a mean test accuracy of 0.73, whereas when permuting the SimCSE embeddings, the model attained a mean test accuracy of 0.48. What this tells us is that the model likely ”learned” more from the SimCSE embeddings than the BERT embeddings. This aligns with findings in our first experiment and explains why our model performance decreased the most when we stripped the interpretability and meaning from the SimCSE embeddings.
 
-**In short, we are able to show that when our model receieves both BERT and SimCSE Embeddings, it exhibits a higher reliance on the SimCSE Embeddings in order to complete our downstream sentiment classification task.**
+#### Takeaway
+In short, we are able to show that when our model receieves both BERT and SimCSE Embeddings, it exhibits a higher reliance on the SimCSE Embeddings in order to complete our downstream sentiment classification task.
+
+#### Visualizations 
+
+The following visualization compares the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
+
+<p align="center">
+<img src="https://github.com/aks5bx/SimCSE/blob/main/extension2.png" width=25% height=25%/>
+</p>
+
 
 ### Summary 
 
