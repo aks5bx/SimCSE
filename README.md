@@ -15,7 +15,7 @@ Specifically, we first attempt to replicate the findings of the paper. Then, we 
 | Replication        | `evaluation.py`                                                                                                                            |
 | Extension 1        | `project_extension/train_sentiment_classifier.py` `project_extension/neural_sentiment_classifier.py` `project_extension/tweet_dataset.py/` |
 | Extension 2        | `project_extension/train_sentiment_classifier.py`   
-| Final Paper        | `SimCSE_Analysis_Paper.pdf` [(link)] (google.com)   
+| Final Paper        | `SimCSE_Analysis_Paper.pdf` [(link)](https://github.com/aks5bx/SimCSE/blob/main/SimCSE_Analysis_Paper.pdf)   
 
 
 
