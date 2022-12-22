@@ -225,7 +225,7 @@ In short, we are able to show that when our model receieves both BERT and SimCSE
 
 #### Visualization 
 
-The following visualization compares the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. (Click to enlarge).
+The following visualization compares the validation accuracy and validation loss curves for the trial permuting SimCSE Embeddings vs the trial permuting BERT Embeddings. As a reminder, increased performance loss for a given permutation implies that the embedding that is being permuted carries more importance. (Click to enlarge).
 
 <p align="center">
 <img src="https://github.com/aks5bx/SimCSE/blob/main/extension2.png" width=35% height=35%/>
