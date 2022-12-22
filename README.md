@@ -220,7 +220,8 @@ The following visualizations compare the validation accuracy curves for the tria
 
 We found that after permuting the BERT embeddings, the model attained a mean test accuracy of 0.73, whereas when permuting the SimCSE embeddings, the model attained a mean test accuracy of 0.48. What this tells us is that the model likely ”learned” more from the SimCSE embeddings than the BERT embeddings. This aligns with findings in our first experiment and explains why our model performance decreased the most when we stripped the interpretability and meaning from the SimCSE embeddings.
 
-We also briefly call out that even after permuting the BERT Embeddings, the network still _almost_ achieves a validation accuracy that is as high as the accuracy reached in Extension 1. This implies that the model is nearly ignoring the BERT Embeddings in favor of the SimCSE Embeddings. 
+We also briefly call out that even after permuting the BERT Embeddings, the network still _almost_ achieves a validation accuracy that is as high as the 
+peak accuracy reached in Extension 1. This implies that the model is nearly ignoring the BERT Embeddings in favor of the SimCSE Embeddings. 
 
 #### Takeaway
 In short, we are able to show that when our model receieves both BERT and SimCSE Embeddings, it exhibits a higher reliance on the SimCSE Embeddings in order to complete our downstream sentiment classification task.
