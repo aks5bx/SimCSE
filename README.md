@@ -210,7 +210,10 @@ The second advantage is that SimCSE achieves close to maximum performance with l
 
 The following visualizatoins compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
 
-<img src="https://user-images.githubusercontent.com/16319829/81180309-2b51f000-8fee-11ea-8a78-ddfe8c3412a7.png](https://github.com/aks5bx/SimCSE/blob/main/extension1.png" width=50% height=50%)>
+<p align="center">
+<img src="https://github.com/aks5bx/SimCSE/blob/main/extension1.png" width=50% height=50%/>
+</p>
+
 
 ### Extension 2
 
