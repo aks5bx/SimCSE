@@ -4,7 +4,7 @@
 
 In this project, we analyze findings from the paper _SimCSE: Simple Contrastive Learning of Sentence Embeddings_ by Tianyu Gao, Xingcheng Yao, Danqi Chen of Princeton University and Tsinghua University. 
 
-Paper [here](https://arxiv.org/pdf/2104.08821.pdf), Codebase [here](https://github.com/princeton-nlp/SimCSE). Notably, this repository is forked from the original SimCSE repository. 
+The paper can be found [here](https://arxiv.org/pdf/2104.08821.pdf). Notably, this repository is forked from the original SimCSE [repository](https://github.com/princeton-nlp/SimCSE). 
 
 Specifically, we first attempt to replicate the findings of the paper. Then, we build on top of the embeddings published by the paper (SimCSE Embeddings) in order to conduct further validation. These validation components are represented as Extension 1 and Extension 2. Finally, we mention that we restrict this analyze to only the supervised SimCSE experiment from the aforementioned paper. 
 
