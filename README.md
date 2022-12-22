@@ -208,12 +208,12 @@ The second advantage is that SimCSE achieves close to maximum performance with l
 
 In short, we are able to show marked improvement on our downstream sentiment classification task when using SimCSE Embeddings compared to Base BERT Embeddings.
 
-#### Visualizations 
+#### Visualization
 
-The following visualizations compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
+The following visualizations compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. (Click to enlarge).
 
 <p align="center">
-<img src="https://github.com/aks5bx/SimCSE/blob/main/extension1.png" width=25% height=25%/>
+<img src="https://github.com/aks5bx/SimCSE/blob/main/extension1.png" width=35% height=35%/>
 </p>
 
 ### Extension 2
@@ -223,14 +223,13 @@ We found that after permuting the BERT embeddings, the model attained a mean tes
 #### Takeaway
 In short, we are able to show that when our model receieves both BERT and SimCSE Embeddings, it exhibits a higher reliance on the SimCSE Embeddings in order to complete our downstream sentiment classification task.
 
-#### Visualizations 
+#### Visualization 
 
-The following visualization compares the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
+The following visualization compares the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. (Click to enlarge).
 
 <p align="center">
-<img src="https://github.com/aks5bx/SimCSE/blob/main/extension2.png" width=25% height=25%/>
+<img src="https://github.com/aks5bx/SimCSE/blob/main/extension2.png" width=35% height=35%/>
 </p>
-
 
 ### Summary 
 
