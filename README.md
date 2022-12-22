@@ -210,6 +210,8 @@ The second advantage is that SimCSE achieves close to maximum performance with l
 
 The following visualizatoins compare the validation accuracy curves for the trial using SimCSE Embeddings vs the trial using BERT Embeddings. 
 
+![Validation Accuracy Curves](https://github.com/aks5bx/SimCSE/blob/main/extension1.png)
+
 ### Extension 2
 
 We found that after permuting the BERT embeddings, the model attained a mean test accuracy of 0.73, whereas when permuting the SimCSE embeddings, the model attained a mean test accuracy of 0.48. What this tells us is that the model likely ”learned” more from the SimCSE embeddings than the BERT embeddings. This aligns with findings in our first experiment and explains why our model performance decreased the most when we stripped the interpretability and meaning from the SimCSE embeddings.
