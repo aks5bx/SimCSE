@@ -4,7 +4,7 @@
 
 In this project, we analyze findings from the paper _SimCSE: Simple Contrastive Learning of Sentence Embeddings_ by Tianyu Gao, Xingcheng Yao, Danqi Chen of Princeton University and Tsinghua University. 
 
-(Paper [here](https://arxiv.org/pdf/2104.08821.pdf), Codebase [here](https://github.com/princeton-nlp/SimCSE). Notably, this repository is forked from the original SimCSE repository. 
+Paper [here](https://arxiv.org/pdf/2104.08821.pdf), Codebase [here](https://github.com/princeton-nlp/SimCSE). Notably, this repository is forked from the original SimCSE repository. 
 
 Specifically, we first attempt to replicate the findings of the paper. Then, we build on top of the embeddings published by the paper (SimCSE Embeddings) in order to conduct further validation. These validation components are represented as Extension 1 and Extension 2. Finally, we mention that we restrict this analyze to only the supervised SimCSE experiment from the aforementioned paper. 
 
@@ -139,7 +139,7 @@ _The only differences here appear to be from differences in rounding._
 
 ## Executive Summary 
 
-As noted, we develop two extensions to further validate the results from the SimCSE paper. We briefly describe them here, but in-depth explanations of both of the extensions can be found in our final paper. 
+As noted, we develop two extensions to further validate the results from the SimCSE paper. We briefly describe them here, but in-depth explanations of both of the extensions can be found in our final paper. Again, we link our final paper [here](https://github.com/aks5bx/SimCSE/blob/main/SimCSE_Analysis_Paper.pdf). 
 
 ### Extension 1: Training and Comparing BERT Model vs SimCSE Model on Sentiment Prediction Task
 
