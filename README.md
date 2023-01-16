@@ -251,7 +251,7 @@ We make special note of the following technologies used for this project:
 
 ### Contributions 
 - Jin Ishizuka: Wrote script to pull tweet data via the Twitter API and generate target sentiment labelings using the TextBlob library 
-- Andre Chen: Created tweet preprocessing pipeline and built, tuned, and evaluated senti- ment classifier neural net model for BERT and SimCSE embeddings
+- Andre Chen: Created tweet preprocessing pipeline and built, tuned, and evaluated sentiment classifier neural net model for BERT and SimCSE embeddings. Collected and plotted experimental results using replicates for robustness of results.
 - Aditya Srikanth: Generated dataset using API script and tweet pipeline. Conducted BERT and SimCSE embeddings permutation, trained network on permuted inputs and collected results
 
 ### References 
